@@ -1,39 +1,61 @@
 package com.piggymetrics.account.controller;
 
+import java.security.Principal;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+
 import com.piggymetrics.account.domain.Account;
 import com.piggymetrics.account.domain.User;
 import com.piggymetrics.account.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.security.Principal;
+@ApplicationPath("/")
+public class AccountController extends Application {
 
-@RestController
-public class AccountController {
+    @Inject
+    private AccountService accountService;
 
-	@Autowired
-	private AccountService accountService;
+    public AccountController() {
+        System.out.println("gdgdfgdfgd");
+    }
 
-	@PreAuthorize("#oauth2.hasScope('server') or #name.equals('demo')")
-	@RequestMapping(path = "/{name}", method = RequestMethod.GET)
-	public Account getAccountByName(@PathVariable String name) {
-		return accountService.findByName(name);
-	}
+    // @PreAuthorize("#oauth2.hasScope('server') or #name.equals('demo')")
+    @Path("/{name}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Account getAccountByName(final String name) {
+        System.out.println("cazz");
+        System.out.println("cazz1");
+        return accountService.findByName(name);
+    }
 
-	@RequestMapping(path = "/current", method = RequestMethod.GET)
-	public Account getCurrentAccount(Principal principal) {
-		return accountService.findByName(principal.getName());
-	}
+    @GET
+    @Path("/current")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Account getCurrentAccount(final Principal principal) {
+        System.out.println("cazz5");
+        return accountService.findByName(principal.getName());
+    }
 
-	@RequestMapping(path = "/current", method = RequestMethod.PUT)
-	public void saveCurrentAccount(Principal principal, @Valid @RequestBody Account account) {
-		accountService.saveChanges(principal.getName(), account);
-	}
+    @PUT
+    @Path("/current")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void saveCurrentAccount(final Principal principal, @Valid final Account account) {
+        accountService.saveChanges(principal.getName(), account);
+    }
 
-	@RequestMapping(path = "/", method = RequestMethod.POST)
-	public Account createNewAccount(@Valid @RequestBody User user) {
-		return accountService.create(user);
-	}
+    @POST
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Account createNewAccount(@Valid final User user) {
+        return accountService.create(user);
+    }
 }

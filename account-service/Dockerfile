@@ -1,8 +1,7 @@
 FROM java:8-jre
 MAINTAINER Alexander Lukyanchikov <sqshq@sqshq.com>
 
-ADD ./target/account-service-swarm.jar /app/
-ADD ./target/account-service.war /app/
-CMD ["java", "-Xmx200m", "-Djava.net.preferIPv4Stack=true", "-jar", "/app/account-service-swarm.jar", "/app/account-service.war"]
+ADD ./target/account-service.jar /app/
+CMD ["java", "-Xmx200m", "-jar", "/app/account-service.jar"]
 
 EXPOSE 6000
